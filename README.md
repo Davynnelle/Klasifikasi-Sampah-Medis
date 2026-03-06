@@ -20,7 +20,7 @@ Proyek klasifikasi gambar limbah biomedis berbasis **Transfer Learning** menggun
 - [Evaluasi Model](#-evaluasi-model)
 - [Insight Bisnis](#-insight-bisnis)
 - [Konversi Model](#-konversi-model)
-- [Teknologi](#teknologi)
+- [Teknologi](#-teknologi)
 - [Cara Menjalankan](#-cara-menjalankan)
 - [Struktur Proyek](#-struktur-proyek)
 
@@ -305,7 +305,7 @@ Environment      : Google Colab (GPU: Tesla T4).
 
 ```bash
 git clone https://github.com/Davynnelle/Klasifikasi-Sampah-Medis.git
-cd biomedical-waste-classification
+cd Klasifikasi-Sampah-Medis
 ```
 
 ### 2. Install dependencies
@@ -335,17 +335,17 @@ Buka `notebook.ipynb` di Google Colab dan jalankan sel secara berurutan.
 ```
 submission/
 │
-├── notebook.ipynb              ← notebook utama
+├── Biomedical_Waste_Classification_Dhea_Yuza_Fadiya.ipynb              ← notebook utama
 │
-├── saved_model/                ← TensorFlow SavedModel
+├── saved_model/                                                        ← TensorFlow SavedModel
 │   ├── saved_model.pb
 │   └── variables/
 │
-├── tflite/                     ← TF-Lite untuk mobile/edge
+├── tflite/                                                             ← TF-Lite untuk mobile/edge
 │   ├── model.tflite
-│   └── label.txt               ← 20 nama kelas
+│   └── label.txt                                                       ← 20 nama kelas
 │
-├── tfjs_model/                 ← TensorFlow.js untuk browser
+├── tfjs_model/                                                         ← TensorFlow.js untuk browser
 │   ├── model.json
 │   └── group1-shard1of1.bin
 │
