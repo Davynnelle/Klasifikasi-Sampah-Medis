@@ -20,7 +20,7 @@ Proyek klasifikasi gambar limbah biomedis berbasis **Transfer Learning** menggun
 - [Evaluasi Model](#-evaluasi-model)
 - [Insight Bisnis](#-insight-bisnis)
 - [Konversi Model](#-konversi-model)
-- [Teknologi](#-teknologi)
+- [Teknologi](#teknologi)
 - [Cara Menjalankan](#-cara-menjalankan)
 - [Struktur Proyek](#-struktur-proyek)
 
