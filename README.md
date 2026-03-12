@@ -384,4 +384,4 @@ submission/
 
 ---
 
-> 💬 *"Dari 12.800 gambar limbah biomedis di 20 kategori, model EfficientNetB0 berhasil mengklasifikasikan dengan akurasi **98,05%** pada test set — menjadikannya kandidat kuat untuk deployment sistem identifikasi limbah medis otomatis di fasilitas kesehatan."*
+> 💬 *"Dari 12.800 gambar limbah biomedis di 20 kategori, model EfficientNetB0 berhasil mengklasifikasikan dengan akurasi **98,05%** pada test set — berpotensi untuk deployment sistem identifikasi limbah medis otomatis di fasilitas kesehatan."*
