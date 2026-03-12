@@ -248,26 +248,33 @@ Model ini berpotensi digunakan sebagai komponen awal dalam sistem pengelolaan li
 ### Implikasi Praktis
 
 **1. Reduksi Risiko Kontaminasi**
+
 Kesalahan penanganan limbah tajam seperti `scalpels`, `episiotomy_scissors`, dan `hemostats` berisiko menyebabkan luka tusuk (*needlestick injury*) pada tenaga medis. Model dengan F1-score tinggi pada kelas-kelas ini membantu mitigasi risiko tersebut.
 
 **2. Efisiensi Operasional**
+
 Identifikasi otomatis mengurangi waktu pemilahan manual di fasilitas kesehatan yang memiliki volume limbah tinggi.
 
 **3. Kepatuhan Regulasi**
+
 Klasifikasi yang akurat mendukung kepatuhan terhadap regulasi pengelolaan limbah medis yang ketat.
 
 ### Rekomendasi Pengembangan
 
 1. 🔧 **Perbaiki klasifikasi gunting bedah**
+
    Tambah augmentasi yang lebih agresif (rotasi 360°, variasi pencahayaan ekstrem) khusus untuk `mayo_scissors`, `episiotomy_scissors`, dan `stitch_removal_scissors` untuk mengurangi kebingungan antar kelas yang serupa secara visual.
 
-2. 📱 **Deployment mobile**
+3. 📱 **Deployment mobile**
+
    Model TF-Lite (5,11 MB) cukup ringan untuk diintegrasikan ke dalam aplikasi Android atau iOS yang digunakan oleh petugas kebersihan medis di lapangan.
 
-3. 🎥 **Real-time classification**
+5. 🎥 **Real-time classification**
+
    Model dapat diintegrasikan dengan sistem kamera pada tempat pembuangan sementara (TPS medis) untuk melakukan klasifikasi limbah secara otomatis saat limbah dibuang.
 
-4. 🔄 **Continuous learning**
+7. 🔄 **Continuous learning**
+
    Mengumpulkan gambar limbah dari fasilitas kesehatan yang berbeda dapat membantu proses fine-tuning berkala, karena jenis alat medis dan kemasan dapat bervariasi antar fasilitas kesehatan.
 
 ---
