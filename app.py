@@ -7,7 +7,7 @@ import time
 
 # ─── Page Config ────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="MedWaste AI · Klasifikasi Limbah Medis",
+    page_title="Klasifikasi Limbah Medis",
     page_icon="🧬",
     layout="wide",
     initial_sidebar_state="collapsed",
