@@ -11,8 +11,9 @@ st.set_page_config(
 )
 
 # ── Constants ─────────────────────────────────────────────────────────────────
-MODEL_PATH = "submission/tflite/model.tflite"
-LABEL_PATH = "submission/tflite/label.txt"
+SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH  = os.path.join(SCRIPT_DIR, "tflite", "model.tflite")
+LABEL_PATH  = os.path.join(SCRIPT_DIR, "tflite", "label.txt")
 IMG_SIZE   = (224, 224)
 
 # ── Load model & labels (cached) ─────────────────────────────────────────────
