@@ -380,6 +380,11 @@ submission/
 
 ---
 
+📄 Model ini tersedia dalam streamlit: https://klasifikasi-sampah-medis-ai.streamlit.app/
+
+---
+---
+
 📄 *Note: This project is based on a final submission from the course "Belajar Fundamental Deep Learning" on Dicoding Indonesia. The goal was to implement and expand on the core concepts introduced in the course.*
 
 ---
