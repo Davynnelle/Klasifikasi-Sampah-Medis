@@ -431,13 +431,14 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ─── Load Model ──────────────────────────────────────────
-if not os.path.exists(MODEL_PATH):
-    st.error("Model tidak ditemukan")
-    st.stop()
-
-interpreter, inp, out = load_model()
-labels = load_labels()
+# ─── Load model ──────────────────────────────────────────────────────────────
+try:
+    interpreter = load_model()
+    labels      = load_labels()
+    model_ok    = True
+except Exception as e:
+    model_ok = False
+    st.error(f"Gagal memuat model: {e}")
 
 # ─── Main layout ─────────────────────────────────────────────────────────────
 col_left, col_right = st.columns([1, 1], gap="large")
