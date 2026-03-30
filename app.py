@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 import os
 
-# ── Page config ──────────────────────────────────────────────────────────────
+# ─── Page Config ─────────────────────────────────────────
 st.set_page_config(
     page_title="Klasifikasi Limbah Medis",
     page_icon="🧬",
@@ -11,13 +11,20 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ── Constants ─────────────────────────────────────────────────────────────────
+# ─── CSS (AMBIL DARI A) ─────────────────────────────────
+st.markdown("""
+<style>
+/* (CSS SAMA PERSIS DARI A — POTONGANMU LANGSUNG TARUH SINI) */
+</style>
+""", unsafe_allow_html=True)
+
+# ─── Constants ───────────────────────────────────────────
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH  = os.path.join(SCRIPT_DIR, "tflite", "model.tflite")
 LABEL_PATH  = os.path.join(SCRIPT_DIR, "tflite", "label.txt")
-IMG_SIZE   = (224, 224)
+IMG_SIZE    = (224, 224)
 
-# ── Load model & labels (cached) ─────────────────────────────────────────────
+# ─── Load Model (PAKAI CARA B) ───────────────────────────
 @st.cache_resource
 def load_model():
     import tensorflow as tf
@@ -32,98 +39,105 @@ def load_labels():
     with open(LABEL_PATH, "r") as f:
         return [line.strip() for line in f.readlines() if line.strip()]
 
-# ── Inference helpers ─────────────────────────────────────────────────────────
-def preprocess(image: Image.Image) -> np.ndarray:
-    img = image.convert("RGB").resize(IMG_SIZE)
+# ─── Preprocess & Predict (B) ────────────────────────────
+def preprocess(img: Image.Image):
+    img = img.convert("RGB").resize(IMG_SIZE)
     arr = np.array(img, dtype=np.float32)
     return np.expand_dims(arr, axis=0)
 
-def predict(image: Image.Image, interpreter, input_details, output_details, class_names):
-    img_array = preprocess(image)
-    interpreter.set_tensor(input_details[0]["index"], img_array)
+def predict(img, interpreter, input_details, output_details, labels):
+    arr = preprocess(img)
+    interpreter.set_tensor(input_details[0]["index"], arr)
     interpreter.invoke()
-    output   = interpreter.get_tensor(output_details[0]["index"])[0]
-    top3_idx = np.argsort(output)[::-1][:3]
-    return [(class_names[i], float(output[i]) * 100) for i in top3_idx]
+    output = interpreter.get_tensor(output_details[0]["index"])[0]
+    top3 = np.argsort(output)[::-1][:3]
+    return [(labels[i], float(output[i]) * 100) for i in top3]
 
-# ── UI ────────────────────────────────────────────────────────────────────────
-st.title("🧬 Biomedical Waste Classifier")
-st.markdown(
-    "Upload gambar limbah biomedis, model akan mengklasifikasikan ke **20 kategori** "
-    "menggunakan **EfficientNetB0** (Transfer Learning)."
-)
-st.divider()
+def fmt_class(name):
+    return name.replace("_", " ").title()
 
-# Check files exist
+# ─── Hero (A) ───────────────────────────────────────────
+st.markdown("""
+<div class="hero">
+    <div class="hero-badge">🧬 AI · Medical Waste Detection</div>
+    <h1>MedWaste <span>Classifier</span></h1>
+    <p>Identifikasi limbah medis otomatis dengan deep learning.</p>
+</div>
+""", unsafe_allow_html=True)
+
+# ─── Load model ─────────────────────────────────────────
 if not os.path.exists(MODEL_PATH) or not os.path.exists(LABEL_PATH):
-    st.error(
-        f"❌ Model atau label tidak ditemukan.\n\n"
-        f"Pastikan file berikut ada:\n"
-        f"- `{MODEL_PATH}`\n"
-        f"- `{LABEL_PATH}`"
-    )
+    st.error("Model atau label tidak ditemukan!")
     st.stop()
 
-# Load
 with st.spinner("Memuat model..."):
     interpreter, input_details, output_details = load_model()
-    class_names = load_labels()
+    labels = load_labels()
 
-st.success(f"✅ Model siap — {len(class_names)} kelas terdeteksi")
-st.divider()
+# ─── Layout ─────────────────────────────────────────────
+col_left, col_right = st.columns([1,1], gap="large")
 
-# Upload
-uploaded_file = st.file_uploader(
-    "📁 Upload gambar limbah biomedis",
-    type=["jpg", "jpeg", "png", "bmp", "webp"],
-)
+# ─── LEFT (UPLOAD) ──────────────────────────────────────
+with col_left:
+    st.markdown('<div class="section-title">Upload Gambar</div>', unsafe_allow_html=True)
 
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
+    uploaded = st.file_uploader(
+        "Upload",
+        type=["jpg","jpeg","png","webp","bmp"],
+        label_visibility="collapsed"
+    )
 
-    col1, col2 = st.columns([1, 1], gap="large")
+    if uploaded:
+        img = Image.open(uploaded)
+        st.image(img, use_container_width=True)
+        run_btn = st.button("🔍 Analisis Sekarang", use_container_width=True)
+    else:
+        run_btn = False
 
-    with col1:
-        st.subheader("🖼️ Gambar Input")
-        st.image(image, use_container_width=True)
-        st.caption(f"Ukuran: {image.size[0]} × {image.size[1]} px")
+# ─── RIGHT (RESULT) ─────────────────────────────────────
+with col_right:
+    st.markdown('<div class="section-title">Hasil Klasifikasi</div>', unsafe_allow_html=True)
 
-    with col2:
-        st.subheader("🔍 Hasil Prediksi")
-        with st.spinner("Menganalisis gambar..."):
-            results = predict(image, interpreter, input_details, output_details, class_names)
+    if uploaded and run_btn:
+        with st.spinner("Menganalisis..."):
+            results = predict(img, interpreter, input_details, output_details, labels)
 
-        top_label, top_conf = results[0]
+        top_class, top_conf = results[0]
 
-        # Badge warna berdasarkan confidence
-        if top_conf >= 80:
-            badge_color = "green"
-        elif top_conf >= 50:
-            badge_color = "orange"
-        else:
-            badge_color = "red"
+        st.markdown(f"""
+        <div class="result-main">
+            <div class="result-label">Prediksi Utama</div>
+            <div class="result-class">{fmt_class(top_class)}</div>
+            <div class="result-conf">
+                Confidence
+                <span class="conf-pill">{top_conf:.1f}%</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
-        st.markdown(
-            f"**Prediksi utama:** "
-            f":{badge_color}[{top_label.replace('_', ' ').title()}]"
-        )
-        st.metric(label="Confidence", value=f"{top_conf:.1f}%")
+        st.markdown('<div class="section-title">Top 3 Prediksi</div>', unsafe_allow_html=True)
 
-        st.markdown("**Top-3 Prediksi:**")
-        colors = ["🥇", "🥈", "🥉"]
-        for medal, (label, conf) in zip(colors, results):
-            clean_label = label.replace("_", " ").title()
-            st.write(f"{medal} **{clean_label}**")
-            st.progress(conf / 100, text=f"{conf:.1f}%")
+        for i, (cls, conf) in enumerate(results):
+            st.markdown(f"""
+            <div class="top3-item">
+                <div class="top3-name">{fmt_class(cls)}</div>
+                <div class="top3-bar-bg">
+                    <div class="top3-bar" style="width:{conf}%"></div>
+                </div>
+                <div class="top3-pct">{conf:.1f}%</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    st.divider()
-    with st.expander("📋 Semua kelas yang didukung"):
-        cols = st.columns(4)
-        for i, name in enumerate(class_names):
-            cols[i % 4].write(f"• {name.replace('_', ' ').title()}")
+    else:
+        st.markdown("""
+        <div style="opacity:0.6;text-align:center;padding:3rem">
+            Upload gambar untuk mulai
+        </div>
+        """, unsafe_allow_html=True)
 
-# ── Footer ────────────────────────────────────────────────────────────────────
-st.markdown(
-    "<br><center><sub>Dibuat oleh Dhea Yuza Fadiya · EfficientNetB0 · TF-Lite</sub></center>",
-    unsafe_allow_html=True,
-)
+# ─── Footer ─────────────────────────────────────────────
+st.markdown("""
+<div style="text-align:center; padding:2rem; opacity:0.6;">
+MedWaste Classifier · EfficientNetB0 · TF Lite
+</div>
+""", unsafe_allow_html=True)
