@@ -1,4 +1,10 @@
 streamlit
-tflite-runtime
+tensorflow
 numpy
 pillow
+pandas
+matplotlib
+seaborn
+tensorflow
+keras
+scikit-learn
