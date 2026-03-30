@@ -553,7 +553,6 @@ st.markdown("""
 <div style="text-align:center; padding:2rem 0 1rem; color:var(--muted); font-size:0.8rem;">
     MedWaste Classifier · Dibuat oleh <strong style="color:var(--text)">Dhea Yuza Fadiya</strong>
     · Powered by EfficientNetB0 + TFLite
-    <br><span style="font-size:0.72rem; opacity:0.6;">© 2025 · Belajar Fundamental Deep Learning · Dicoding Indonesia</span>
+    <br><span style="font-size:0.72rem; opacity:0.6;">© 2026 · Belajar Fundamental Deep Learning · Dicoding Indonesia</span>
 </div>
-<<<<<<< HEAD
 """, unsafe_allow_html=True)
