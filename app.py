@@ -1,7 +1,10 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-from ai_edge_litert.interpreter import Interpreter
+try:
+    from ai_edge_litert.interpreter import Interpreter
+except ImportError:
+    from tflite_runtime.interpreter import Interpreter
 import os
 import time
 
