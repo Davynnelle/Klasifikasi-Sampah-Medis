@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-import tensorflow as tf
+from tflite_runtime.interpreter import Interpreter
 import os
 import time
 
@@ -368,7 +368,7 @@ RISK_MAP = {
 # ─── Load resources ──────────────────────────────────────────────────────────
 @st.cache_resource
 def load_model():
-    interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
+    interpreter = Interpreter(model_path=MODEL_PATH)
     interpreter.allocate_tensors()
     return interpreter
 
