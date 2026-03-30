@@ -555,4 +555,8 @@ st.markdown("""
     · Powered by EfficientNetB0 + TFLite
     <br><span style="font-size:0.72rem; opacity:0.6;">© 2025 · Belajar Fundamental Deep Learning · Dicoding Indonesia</span>
 </div>
+<<<<<<< HEAD
 """, unsafe_allow_html=True)
+=======
+""", unsafe_allow_html=True)
+>>>>>>> b040c33 (git commit -m "Update Streamlit app and requirements")
