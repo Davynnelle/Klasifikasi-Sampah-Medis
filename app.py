@@ -1,13 +1,19 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-import tensorflow as tf
 import os
 import time
 
+try:
+    import tflite_runtime.interpreter as tflite
+    Interpreter = tflite.Interpreter
+except ImportError:
+    import tensorflow as tf
+    Interpreter = tf.lite.Interpreter
+
 # ─── Page Config ────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Klasifikasi Limbah Medis",
+    page_title="MedWaste AI · Klasifikasi Limbah Medis",
     page_icon="🧬",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -328,9 +334,8 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 """, unsafe_allow_html=True)
 
 # ─── Constants ──────────────────────────────────────────────────────────────
-SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH  = os.path.join(SCRIPT_DIR, "tflite", "model.tflite")
-LABEL_PATH  = os.path.join(SCRIPT_DIR, "tflite", "label.txt")
+MODEL_PATH  = "tflite/model.tflite"
+LABEL_PATH  = "tflite/label.txt"
 IMG_SIZE    = (224, 224)
 
 FALLBACK_LABELS = [
@@ -368,7 +373,7 @@ RISK_MAP = {
 # ─── Load resources ──────────────────────────────────────────────────────────
 @st.cache_resource
 def load_model():
-    interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
+    interpreter = Interpreter(model_path=MODEL_PATH)
     interpreter.allocate_tensors()
     return interpreter
 
