@@ -16,7 +16,8 @@ MODEL_PATH = "tflite/model.tflite"
 LABEL_PATH = "tflite/label.txt"
 IMG_SIZE = (224, 224)
 
-# ─── DEBUG INFO (hapus nanti kalau sudah aman) ───────────
+# ─── DEBUG AWAL ──────────────────────────────────────────
+st.write("✅ App started")
 st.write("Working dir:", os.getcwd())
 st.write("Model exists:", os.path.exists(MODEL_PATH))
 st.write("Label exists:", os.path.exists(LABEL_PATH))
@@ -39,10 +40,10 @@ def load_labels():
                 return [l.strip() for l in f.readlines()]
         return FALLBACK_LABELS
     except Exception as e:
-        st.error(f"Error load label: {e}")
+        st.error(f"❌ Error load label: {e}")
         return FALLBACK_LABELS
 
-# ─── LOAD MODEL ──────────────────────────────────────────
+# ─── LOAD MODEL (LAZY) ───────────────────────────────────
 @st.cache_resource
 def load_model():
     try:
@@ -50,8 +51,7 @@ def load_model():
         interpreter.allocate_tensors()
         return interpreter
     except Exception as e:
-        st.error(f"❌ Gagal load model: {e}")
-        st.stop()
+        raise RuntimeError(f"Gagal load model: {e}")
 
 # ─── PREPROCESS ──────────────────────────────────────────
 def preprocess(img):
@@ -61,28 +61,21 @@ def preprocess(img):
 
 # ─── PREDICT ─────────────────────────────────────────────
 def predict(interpreter, img_array, labels):
-    try:
-        input_details = interpreter.get_input_details()
-        output_details = interpreter.get_output_details()
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
 
-        interpreter.set_tensor(input_details[0]["index"], img_array)
-        interpreter.invoke()
+    interpreter.set_tensor(input_details[0]["index"], img_array)
+    interpreter.invoke()
 
-        probs = interpreter.get_tensor(output_details[0]["index"])[0]
-        top3_idx = np.argsort(probs)[::-1][:3]
+    probs = interpreter.get_tensor(output_details[0]["index"])[0]
+    top3_idx = np.argsort(probs)[::-1][:3]
 
-        return [(labels[i], float(probs[i]) * 100) for i in top3_idx]
-
-    except Exception as e:
-        st.error(f"❌ Error saat prediksi: {e}")
-        return []
+    return [(labels[i], float(probs[i]) * 100) for i in top3_idx]
 
 # ─── UI ──────────────────────────────────────────────────
 st.title("🧬 MedWaste Classifier")
 st.write("Upload gambar limbah medis untuk diklasifikasikan")
 
-# Load resource
-interpreter = load_model()
 labels = load_labels()
 
 uploaded = st.file_uploader("Upload gambar", type=["jpg","png","jpeg"])
@@ -98,16 +91,18 @@ if uploaded:
 
     if st.button("🔍 Analisis"):
         with st.spinner("Menganalisis..."):
-            time.sleep(0.5)
+            try:
+                # 🔥 LAZY LOAD MODEL DI SINI (FIX UTAMA)
+                interpreter = load_model()
 
-            arr = preprocess(img)
-            results = predict(interpreter, arr, labels)
+                arr = preprocess(img)
+                results = predict(interpreter, arr, labels)
 
-        if results:
-            st.subheader("Hasil Prediksi")
+                st.subheader("Hasil Prediksi")
+                for i, (label, conf) in enumerate(results):
+                    st.write(f"{i+1}. {label} → {conf:.2f}%")
 
-            for i, (label, conf) in enumerate(results):
-                st.write(f"{i+1}. {label} → {conf:.2f}%")
-
+            except Exception as e:
+                st.error(f"❌ ERROR SAAT INFERENSI: {e}")
 else:
     st.info("📤 Upload gambar terlebih dahulu")
