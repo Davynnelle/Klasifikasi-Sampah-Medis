@@ -5,9 +5,10 @@ import os
 
 # ── Page config ──────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Biomedical Waste Classifier",
+    page_title="Klasifikasi Limbah Medis",
     page_icon="🧬",
-    layout="centered",
+    layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
 # ── Constants ─────────────────────────────────────────────────────────────────
