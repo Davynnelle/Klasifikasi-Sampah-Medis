@@ -1,7 +1,8 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-from tflite_runtime.interpreter import Interpreter
+import tensorflow as tf
+Interpreter = tf.lite.Interpreter
 import os
 import time
 
