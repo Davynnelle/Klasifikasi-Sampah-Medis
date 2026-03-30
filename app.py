@@ -1,8 +1,7 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-import tensorflow as tf
-Interpreter = tf.lite.Interpreter
+from ai_edge_litert.interpreter import Interpreter
 import os
 import time
 
