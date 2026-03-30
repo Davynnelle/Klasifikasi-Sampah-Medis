@@ -1,24 +1,27 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-import tflite_runtime.interpreter as tflite
+import tensorflow as tf
 import os
 import time
 
-# ─── Page Config ─────────────────────────────────────────
+# ─── CONFIG ──────────────────────────────────────────────
 st.set_page_config(
-    page_title="Klasifikasi Limbah Medis",
+    page_title="MedWaste Classifier",
     page_icon="🧬",
-    layout="wide",
+    layout="wide"
 )
 
-# ─── Paths ───────────────────────────────────────────────
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(SCRIPT_DIR, "tflite", "model.tflite")
-LABEL_PATH = os.path.join(SCRIPT_DIR, "tflite", "label.txt")
+MODEL_PATH = "tflite/model.tflite"
+LABEL_PATH = "tflite/label.txt"
 IMG_SIZE = (224, 224)
 
-# ─── Labels fallback ─────────────────────────────────────
+# ─── DEBUG INFO (hapus nanti kalau sudah aman) ───────────
+st.write("Working dir:", os.getcwd())
+st.write("Model exists:", os.path.exists(MODEL_PATH))
+st.write("Label exists:", os.path.exists(LABEL_PATH))
+
+# ─── LABELS ──────────────────────────────────────────────
 FALLBACK_LABELS = [
     "ampoules_full","ampuoles_broken","blood_soaked_bandages",
     "disinfectant_bottles","episiotomy_scissors","expired_tablets",
@@ -28,42 +31,51 @@ FALLBACK_LABELS = [
     "used_medical_paper","used_syringes"
 ]
 
-# ─── Load Model ──────────────────────────────────────────
-@st.cache_resource
-def load_model():
-    if not os.path.exists(MODEL_PATH):
-        st.error("Model tidak ditemukan di folder /tflite/")
-        st.stop()
-
-    interpreter = tflite.Interpreter(model_path=MODEL_PATH)
-    interpreter.allocate_tensors()
-    return interpreter
-
 @st.cache_data
 def load_labels():
-    if os.path.exists(LABEL_PATH):
-        with open(LABEL_PATH) as f:
-            return [l.strip() for l in f.readlines()]
-    return FALLBACK_LABELS
+    try:
+        if os.path.exists(LABEL_PATH):
+            with open(LABEL_PATH) as f:
+                return [l.strip() for l in f.readlines()]
+        return FALLBACK_LABELS
+    except Exception as e:
+        st.error(f"Error load label: {e}")
+        return FALLBACK_LABELS
 
-# ─── Preprocess ──────────────────────────────────────────
+# ─── LOAD MODEL ──────────────────────────────────────────
+@st.cache_resource
+def load_model():
+    try:
+        interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
+        interpreter.allocate_tensors()
+        return interpreter
+    except Exception as e:
+        st.error(f"❌ Gagal load model: {e}")
+        st.stop()
+
+# ─── PREPROCESS ──────────────────────────────────────────
 def preprocess(img):
     img = img.convert("RGB").resize(IMG_SIZE)
-    arr = np.array(img, dtype=np.float32) / 255.0  # penting!
+    arr = np.array(img, dtype=np.float32) / 255.0
     return np.expand_dims(arr, axis=0)
 
-# ─── Predict ─────────────────────────────────────────────
+# ─── PREDICT ─────────────────────────────────────────────
 def predict(interpreter, img_array, labels):
-    input_details = interpreter.get_input_details()
-    output_details = interpreter.get_output_details()
+    try:
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
 
-    interpreter.set_tensor(input_details[0]["index"], img_array)
-    interpreter.invoke()
+        interpreter.set_tensor(input_details[0]["index"], img_array)
+        interpreter.invoke()
 
-    probs = interpreter.get_tensor(output_details[0]["index"])[0]
-    top3_idx = np.argsort(probs)[::-1][:3]
+        probs = interpreter.get_tensor(output_details[0]["index"])[0]
+        top3_idx = np.argsort(probs)[::-1][:3]
 
-    return [(labels[i], float(probs[i]) * 100) for i in top3_idx]
+        return [(labels[i], float(probs[i]) * 100) for i in top3_idx]
+
+    except Exception as e:
+        st.error(f"❌ Error saat prediksi: {e}")
+        return []
 
 # ─── UI ──────────────────────────────────────────────────
 st.title("🧬 MedWaste Classifier")
@@ -79,22 +91,23 @@ if uploaded:
     try:
         img = Image.open(uploaded)
     except:
-        st.error("File tidak valid")
+        st.error("❌ File gambar tidak valid")
         st.stop()
 
     st.image(img, caption="Preview", use_container_width=True)
 
-    if st.button("Analisis"):
-        with st.spinner("Processing..."):
+    if st.button("🔍 Analisis"):
+        with st.spinner("Menganalisis..."):
             time.sleep(0.5)
 
             arr = preprocess(img)
             results = predict(interpreter, arr, labels)
 
-        st.subheader("Hasil Prediksi")
+        if results:
+            st.subheader("Hasil Prediksi")
 
-        for i, (label, conf) in enumerate(results):
-            st.write(f"{i+1}. {label} → {conf:.2f}%")
+            for i, (label, conf) in enumerate(results):
+                st.write(f"{i+1}. {label} → {conf:.2f}%")
 
 else:
-    st.info("Upload gambar dulu ya 👆")
+    st.info("📤 Upload gambar terlebih dahulu")
