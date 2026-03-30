@@ -13,7 +13,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-st.write("APP STARTED")
+st.set_option('server.port', 7860)
 
 # ─── Custom CSS ─────────────────────────────────────────────────────────────
 st.markdown("""
