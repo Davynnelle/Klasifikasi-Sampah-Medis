@@ -7,7 +7,7 @@ import time
 
 # ─── Page Config ────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Klasifikasi Limbah Medis",
+    page_title="MedWaste AI · Klasifikasi Limbah Medis",
     page_icon="🧬",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -328,9 +328,8 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 """, unsafe_allow_html=True)
 
 # ─── Constants ──────────────────────────────────────────────────────────────
-SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH  = os.path.join(SCRIPT_DIR, "tflite", "model.tflite")
-LABEL_PATH  = os.path.join(SCRIPT_DIR, "tflite", "label.txt")
+MODEL_PATH  = "tflite/model.tflite"
+LABEL_PATH  = "tflite/label.txt"
 IMG_SIZE    = (224, 224)
 
 FALLBACK_LABELS = [
