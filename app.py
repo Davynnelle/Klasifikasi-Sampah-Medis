@@ -1,9 +1,10 @@
 import streamlit as st
 import numpy as np
 from PIL import Image
-import tensorflow as tf
 import os
 import time
+
+from ai_edge_litert.interpreter import Interpreter
 
 # ─── Page Config ────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -367,7 +368,7 @@ RISK_MAP = {
 # ─── Load resources ──────────────────────────────────────────────────────────
 @st.cache_resource
 def load_model():
-    interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
+    interpreter = Interpreter(model_path=MODEL_PATH)
     interpreter.allocate_tensors()
     return interpreter
 
