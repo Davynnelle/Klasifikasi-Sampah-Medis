@@ -4,8 +4,6 @@ from PIL import Image
 import os
 import time
 import traceback
-
-# ✅ Gunakan TFLite runtime (lebih ringan)
 import tflite_runtime.interpreter as tflite
 
 # ─── Page Config ─────────────────────────────────────────────
