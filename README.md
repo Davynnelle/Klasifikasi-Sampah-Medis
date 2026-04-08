@@ -342,7 +342,7 @@ Buka `notebook.ipynb` di Google Colab dan jalankan sel secara berurutan.
 
 > ⚠️ **Upload `kaggle.json`** saat cell `files.upload()` dijalankan
 
-> Quick Demo (No Training Required)
+### 5. Quick Demo (No Training Required)
 Gunakan aplikasi yang sudah dideploy: [MedWaste Classifier](https://klasifikasi-sampah-medis-ai.streamlit.app/)
 
 ---
