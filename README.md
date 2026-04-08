@@ -28,7 +28,13 @@ Proyek klasifikasi gambar limbah biomedis berbasis **Transfer Learning** menggun
 
 ## 📌 Deskripsi Proyek
 
-Proyek ini membangun model klasifikasi gambar **end-to-end** untuk mengidentifikasi jenis limbah biomedis menggunakan pendekatan **Transfer Learning** dengan **two-phase training**:
+Pengelolaan limbah medis adalah masalah krusial dalam sektor kesehatan. Kesalahan klasifikasi dapat menyebabkan:
+
+* Risiko infeksi & kontaminasi
+* Pelanggaran regulasi
+* Inefisiensi operasional
+
+Proyek ini membangun model klasifikasi berbasis Computer Vision **end-to-end** untuk mengidentifikasi jenis limbah biomedis menggunakan pendekatan **Transfer Learning** dengan **two-phase training**:
 
 | Fase | Strategi | Learning Rate | Hasil Val Accuracy |
 |---|---|---|---|
@@ -156,7 +162,7 @@ Dense(512, relu) → Dropout(0.4)
       ↓
 Dense(256, relu) → Dropout(0.3)
       ↓
-Dense(20, softmax)    ← output 20 kelas
+Dense(20, softmax)  
 ```
 
 ### Mengapa Tidak Pakai `rescale=1./255`?
@@ -380,9 +386,34 @@ submission/
 
 ---
 
-📄 Model ini tersedia dalam streamlit: https://klasifikasi-sampah-medis-ai.streamlit.app/
+## ▶️ How to Run
 
----
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/Davynnelle/Klasifikasi-Sampah-Medis.git
+cd Klasifikasi-Sampah-Medis
+pip install -r requirements.txt
+````
+### 2. Run Training (Google Colab - Recommended)
+
+Buka notebook berikut di Google Colab:
+
+```
+submission/Biomedical_Waste_Classification_Dhea_Yuza_Fadiya.ipynb
+```
+
+#### Steps:
+1. Aktifkan GPU
+   `Runtime → Change runtime type → T4 GPU`
+2. Setup Kaggle API
+   * Download `kaggle.json` dari akun Kaggle
+   * Upload saat diminta di notebook
+3. Jalankan semua cell dari atas ke bawah
+
+### 3. Quick Demo (No Training Required)
+Gunakan aplikasi yang sudah dideploy: [MedWaste Classifier](https://klasifikasi-sampah-medis-ai.streamlit.app/)
+
 ---
 
 📄 *Note: This project is based on a final submission from the course "Belajar Fundamental Deep Learning" on Dicoding Indonesia. The goal was to implement and expand on the core concepts introduced in the course.*
