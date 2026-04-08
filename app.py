@@ -520,7 +520,7 @@ with col_right:
         <div style="background:var(--card); border:1px dashed var(--border); border-radius:var(--radius); padding:3rem 2rem; text-align:center; color:var(--muted);">
             <div style="font-size:2.5rem; margin-bottom:0.75rem;">🔬</div>
             <div style="font-family:'Syne',sans-serif; font-size:1rem; font-weight:600; color:var(--text); margin-bottom:0.4rem;">Belum ada gambar</div>
-            <div style="font-size:0.85rem;">Upload gambar di sebelah kiri untuk memulai analisis</div>
+            <div style="font-size:0.85rem;">Upload gambar untuk memulai analisis</div>
         </div>
         """, unsafe_allow_html=True)
     elif not run_btn:
