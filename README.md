@@ -23,6 +23,7 @@ Proyek klasifikasi gambar limbah biomedis berbasis **Transfer Learning** menggun
 - [Teknologi](#-teknologi)
 - [Cara Menjalankan](#-cara-menjalankan)
 - [Struktur Proyek](#-struktur-proyek)
+- [Hyperparameter](#-hyperparameter)
 
 ---
 
@@ -341,6 +342,9 @@ Buka `notebook.ipynb` di Google Colab dan jalankan sel secara berurutan.
 
 > ⚠️ **Upload `kaggle.json`** saat cell `files.upload()` dijalankan
 
+> Quick Demo (No Training Required)
+Gunakan aplikasi yang sudah dideploy: [MedWaste Classifier](https://klasifikasi-sampah-medis-ai.streamlit.app/)
+
 ---
 
 ## 📁 Struktur Proyek
@@ -383,36 +387,6 @@ submission/
 | ReduceLROnPlateau factor | 0.3 |
 | Dropout (Dense 512) | 0.4 |
 | Dropout (Dense 256) | 0.3 |
-
----
-
-## ▶️ How to Run
-
-### 1. Clone Repository
-
-```bash
-git clone https://github.com/Davynnelle/Klasifikasi-Sampah-Medis.git
-cd Klasifikasi-Sampah-Medis
-pip install -r requirements.txt
-````
-### 2. Run Training (Google Colab - Recommended)
-
-Buka notebook berikut di Google Colab:
-
-```
-submission/Biomedical_Waste_Classification_Dhea_Yuza_Fadiya.ipynb
-```
-
-#### Steps:
-1. Aktifkan GPU
-   `Runtime → Change runtime type → T4 GPU`
-2. Setup Kaggle API
-   * Download `kaggle.json` dari akun Kaggle
-   * Upload saat diminta di notebook
-3. Jalankan semua cell dari atas ke bawah
-
-### 3. Quick Demo (No Training Required)
-Gunakan aplikasi yang sudah dideploy: [MedWaste Classifier](https://klasifikasi-sampah-medis-ai.streamlit.app/)
 
 ---
 
